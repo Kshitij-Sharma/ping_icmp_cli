@@ -1,35 +1,54 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
-
-	"github.com/urfave/cli"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
-var app = cli.NewApp()
-
-var ping = []string{"Ping for IPv4 addresses"}
-
-func info() {
-	app.Name = "Ping CLI"
-	app.Usage = "A CLI for sending and recieving ICMP echo requests and replies"
-	app.Author = "Kshitij Sharma"
-	app.Version = "1.0.0"
-}
-
-func commands(){
-	app.Commands = []cli.Command{
-		{
-			Name: "ping",
-			Usage: "A CLI for sending and recieving ICMP requests to a hostname"
-			Func:
-		}
-	}
-}
 func main() {
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
+
+	var count int = 0
+	var running = true // for infinite requests
+	/* parse command line args */
+	prog := os.Args[0]
+	hostname := os.Args[1]
+
+	/* just for show */
+	fmt.Println("Hostname: ", hostname)
+
+	/* quick checker */
+	if prog != "./Cloudflare" {
+		fmt.Println("Incorrect command, please use ./Cloudflare")
+		return
 	}
+
+	/* creating channels to recieve signal notifications */
+	sigs := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+
+	/* registers given channel, in this apps case fo CRTL+C */
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	/* executes blocking recieve for signals */
+	go func() {
+		<-sigs
+		fmt.Println()
+		fmt.Printf("--- %s ping statistics ---\n", hostname)
+		running = false
+		done <- true
+	}()
+
+	/* runs requests in a while loop until interrupted */
+	for running {
+		ping(hostname)
+		count++
+		time.Sleep(1 * time.Second)
+	}
+
+	/* summary data */
+	fmt.Printf("%d packets transmitted, %d packets recieved, %f%% packet loss\n", count, count, packetloss)
+	<-done
 }
