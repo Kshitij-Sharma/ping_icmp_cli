@@ -10,6 +10,7 @@
 * Github: https://github.com/Kshitij-Sharma
 *
  */
+package main
 
 import (
 	"fmt"
@@ -43,7 +44,6 @@ The steps followed: (based on https://www.geeksforgeeks.org/ping-in-c/)
  * Outputs: none
  * Side Effects: none
  * */
-
 func listenInit(address string, c net.PacketConn, err error) {
 	c, err = icmp.ListenPacket("ip4:icmp", address) // privileged ICMP endpoint, needs ip4:icmp
 }
@@ -95,6 +95,7 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 	/* step 1: intialize listening for ICMP replies */
 	listenInit(ipv4Addr, connection, err)
 	if err != nil {
+		fmt.Println("ping: cannot initialize ICMP packket listening")
 		return nil, 0, 0, err
 	}
 	//
@@ -108,7 +109,7 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 	/* step 2: do a DNS lookup on the hostname */
 	getHostByName(hostname, err, myAddress)
 	if err != nil {
-		fmt.Printf("ping: cannot resolve %s: Unknown host")
+		fmt.Println("ping: cannot resolve %s: Unknown host", hostname)
 		return nil, 0, 0, err
 	}
 
@@ -117,8 +118,8 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 		/* make the ICMP message to send */
 		makeICMP(myMessage, myBinaryMessage, err) // myBinaryMessage holds the binary encoding of ICMP message myMessage
 		if err != nil {
+			fmt.Println("ping: cannot build ICMP message")
 			return myAddress, 0, 0, err
-			break
 		}
 
 		/* send ICMP message */
@@ -126,11 +127,12 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 		numBytesWritten, err := connection.WriteTo(myBinaryMessage, myAddress)
 
 		if err != nil {
+			fmt.Println("ping: cannot build ICMP echo request")
 			return myAddress, 0, 0, err
-			break
 		} else if numBytesWritten != len(myBinaryMessage) {
-			return myAddress, 0, 0, fmt.Errorf("got %v; want %v", numBytesWritten, len(myBinaryMessage))
-			break
+			err = fmt.Errorf("got %v; want %v", numBytesWritten, len(myBinaryMessage))
+			fmt.Println(err.Error())
+			return myAddress, 0, 0, err
 		}
 
 		/* wait for ICMP message reply */
@@ -138,11 +140,12 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 		err = connection.SetReadDeadline(time.Now().Add(10 * time.Second)) // set a read time limit to 10 seconds
 
 		if err != nil {
+			fmt.Println("ping: connection request timed out")
 			return myAddress, 0, 0, err
-			break
 		}
 		numBytesRead, peer, err := connection.ReadFrom(replyBuffer)
 		if err != nil {
+			fmt.Println("ping: could not read ICMP reply")
 			return myAddress, 0, 0, err
 		}
 		messageDuration := time.Since(messageStart)
@@ -150,6 +153,7 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 		/* step 4: print out data */
 		retrievedMessage, err := icmp.ParseMessage(ProtocolICMP, replyBuffer[:numBytesRead])
 		if err != nil {
+			fmt.Println("ping: could not parse ICMP message")
 			return myAddress, 0, 0, err
 		}
 		switch retrievedMessage.Type {
@@ -165,12 +169,15 @@ func ping(hostname string) (*net.IPAddr, time.Duration, float64, error) {
 			} else {
 				packetloss = (1 - packetloss) * 100
 			}
-			fmt.Printf("Ping %s (%s): %s %v%% packet loss\n", hostname, myAddress, messageDuration, packetloss)
-			return myAddress, messageDuration, packetloss, nil
+			fmt.Printf("Ping from %s (%s): %s %v%% packet loss (bytes) \n", hostname, myAddress, messageDuration, packetloss)
 		default:
-			return myAddress, 0, 0, fmt.Errorf("got %+v from %v; want echo reply", retrievedMessage, peer)
+			fmt.Errorf("got %+v from %v; want echo reply", retrievedMessage, peer)
 		}
 		time.Sleep(1 * time.Second)
 	}
 	return myAddress, 0, 0, err
+}
+
+func main() {
+
 }

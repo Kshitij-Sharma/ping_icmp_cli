@@ -22,7 +22,8 @@ func commands(){
 	app.Commands = []cli.Command{
 		{
 			Name: "ping",
-			Usage: "S"
+			Usage: "A CLI for sending and recieving ICMP requests to a hostname"
+			Func:
 		}
 	}
 }
