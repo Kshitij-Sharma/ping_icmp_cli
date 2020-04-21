@@ -13,7 +13,6 @@ func main() {
 	var count int = 0
 	var running = true // for infinite requests
 	/* parse command line args */
-	prog := os.Args[0]
 	hostname := os.Args[1]
 
 	/* just for show */
