@@ -19,12 +19,6 @@ func main() {
 	/* just for show */
 	fmt.Println("Hostname: ", hostname)
 
-	/* quick checker */
-	if prog != "./Cloudflare" {
-		fmt.Println("Incorrect command, please use ./Cloudflare")
-		return
-	}
-
 	/* creating channels to recieve signal notifications */
 	sigs := make(chan os.Signal, 1)
 	done := make(chan bool, 1)
