@@ -10,7 +10,8 @@ import (
 
 func main() {
 
-	var count int = 0
+	var transmitted int = 0
+	var received int = 0
 	var running = true // for infinite requests
 	/* parse command line args */
 	hostname := os.Args[1]
@@ -36,12 +37,13 @@ func main() {
 
 	/* runs requests in a while loop until interrupted */
 	for running {
+		transmitted++
 		ping(hostname)
-		count++
+		received++ // accounting for CRTL+C interrupt between the ping funciton
 		time.Sleep(1 * time.Second)
 	}
 
 	/* summary data */
-	fmt.Printf("%d packets transmitted, %d packets recieved, %f%% packet loss\n", count, count, packetloss)
+	fmt.Printf("%d packets transmitted, %d packets recieved, %f%% packet loss\n", transmitted, received, packetloss)
 	<-done
 }
