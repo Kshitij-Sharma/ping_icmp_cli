@@ -10,7 +10,6 @@ It truly amazed me that before I would be running terminal commands for fun, and
   - **ping.go** - This is the main file that does all the brainwork. Broken down into some steps, it starts listening for ICMP replies, sends a message, retrieves and parses the messages and feeds back important metadata such as loss, RTT times, and the IP endpoint address.
   - **main.go** - This file takes care of parsing the input through the terminal and running the pings in an infinite loop with an additional feature of the CRTL+C interrupt which when triggered, prints out some overall statistics modeled after the way we see ping in terminal.
   
-3. Some things I would like to work on and add on to this application would be support for IPv6 as it can only handle IPv4 as of right now. My thought process was to use a flag in the command line to signify whether an IPv6 or an IPv4 address is being passed in, so that I could dynamically set the ListenPacket, and ResolveIPAddress to handle IPv6 based on the input flag however I struggled with syntax issues and proper package use.
     
 
 ## Software Dependencies
@@ -31,6 +30,9 @@ Some example tests you can run are:
 - ```sudo ./ping_icmp_cli www.apple.com```
 - ```sudo ./ping_icmp_cli 151.101.1.67```
 
+## Future Goals 
+3. Some things I would like to work and add on to this application would be support for IPv6 as it can only handle IPv4 as of right now. My thought process was to use a flag in the command line to signify whether an IPv6 or an IPv4 address is being passed in, so that I could dynamically set the ListenPacket, and ResolveIPAddress to handle IPv6 based on the input flag, however, I struggled with syntax issues and proper package use.
+
 ## Requirements
 1. Use one of the specified languages
 Please choose from among C/C++/Go/Rust. If you aren't familiar with these languages, you're not alone! Many engineers join Cloudflare without specific langauge experience. Please consult A Tour of Go or The Rust Programming Language.
@@ -45,4 +47,4 @@ As long as the program is running it should continue to emit requests with a per
 Packet loss and latency should be reported as each message received.
 
 ## Thank you
-Special shout out to CloudFlare for the unique brain buster, happy quarantine!f
+Special shout out to CloudFlare for the unique brain buster, happy quarantine!
