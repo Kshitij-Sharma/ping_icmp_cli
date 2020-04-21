@@ -30,6 +30,8 @@ Some example tests you can run are:
 - ```sudo ./ping_icmp_cli www.apple.com```
 - ```sudo ./ping_icmp_cli 151.101.1.67```
 
+![](images/PingExampleOutput.png)
+
 ## Future Goals 
 Some things I would like to work and add on to this application would be support for IPv6 as it can only handle IPv4 as of right now. My thought process was to use a flag in the command line to signify whether an IPv6 or an IPv4 address is being passed in, so that I could dynamically set the ListenPacket, and ResolveIPAddress to handle IPv6 based on the input flag, however, I struggled with syntax issues and proper package use.
 
