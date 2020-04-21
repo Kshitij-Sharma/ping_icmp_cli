@@ -2,7 +2,7 @@
 
 ## Language Style & Design Decision Overview
 
-1. The goal when building this project was to emphasize neat and organized code that is separated into blocks for not only easy reading, but debugging as well. I decided to challenge myself and consider this as a mini personal project so I could keep myself busy and productive during quarantine- so I tried to build this in Go, something I've never used before. To my surprise, with previous python experience with python and alot of linux development ext2 development in C from my operating systems class, the transition to using this language wasn't bad at all. In fact, some of the golang libraries were absolute saviours when making this app.
+1. The goal when building this project was to emphasize neat and organized code that is separated into blocks for not only easy reading, but debugging as well. I decided to challenge myself and try using Go for the first time, considering this as a mini personal project so I could keep myself busy and productive during quarantine. To my surprise, with previous python experience and alot of linux ext2 development in C from my operating systems class, the transition to using this language wasn't bad at all. In fact, some of the golang libraries were absolute saviours when making this app.
 
 It truly amazed me that before I would be running terminal commands for fun, and now I was able to make something that models ping- thanks to this challenge (and go libraries).
 
